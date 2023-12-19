@@ -1,7 +1,8 @@
 #!/bin/bash -e
 #SBATCH --job-name=AtomsCavityBasisDemo # job name (shows up in the queue)
+
 #SBATCH --time=02:00:00      # Walltime (HH:MM:SS)
-#SBATCH --mem=50GB          # Memory in MB
+#SBATCH --mem=16GB          # Memory in GB
 #SBATCH --cpus-per-task=4   # number of threads
 
 while getopts p: flag
@@ -10,6 +11,7 @@ do
        p) profiler=${OPTARG};;
     esac
 done
+
 
 module purge
 module load Python
