@@ -61,22 +61,44 @@ H = eps*(a + a.dag())
 for i in range(Natom):
     H = H + g*(a.dag()*sm[i] + a*sm[i].dag())
     c_ops.append(np.sqrt(gamma)*sm[i])
-    
+
+hamiltonian_time = time.time()
+print("Time to build Hamiltonian = {}s.".format(np.round(hamiltonian_time-start_time,2)))
+
 #%% Solve master equation
-rhoss = qt.steadystate(H,c_ops)
+# Steady state solver
+rhoss = qt.steadystate(H,c_ops,method = configs['SOLVER']['ssmethod'])
 print("Cavity mode commutator = {}".format(np.round(qt.expect(a*a.dag()-a.dag()*a,rhoss),5)))
-rho0 = qt.mesolve(H,rhoss,tlist,c_ops,progress_bar=True)
-solve_time = np.round(time.time()-start_time,2)
-print("Time taken till solver = {}s.".format(solve_time))
+ss_time = time.time()
+print("Steady state found in {}s.".format(np.round(ss_time-hamiltonian_time,2)))
 
-fig0,ax0 = qt.hinton(rho0.states[-1])
-fig1,ax1 = qt.hinton(rho0.states[-1].ptrace(0))
-qt.hinton(rho0.states[-1].ptrace(1))
-if Natom >=2:
-    qt.hinton(rho0.states[-1].ptrace(2))
+# Initial state for master equation
+if configs['SOLVER'].getboolean('ssinit'):
+    rhoi = qt.tensor([qt.basis(2,1) for i in range(Natom)])
+    rhoi = qt.tensor(qt.basis(Ncav,0),rhoi)
+else:
+    rhoi = rhoss
 
-#%% Save figure
-plt.figure(fig1)
-plt.savefig(configs['OUTPUTS']['savefig'],format='png',bbox_inches='tight')
+# Master equation solver
+options = qt.Options()
+options.store_states = False
+options.store_final_state = True
+
+rho0 = qt.mesolve(H,rhoi,tlist,c_ops,progress_bar=True)
+solve_time = time.time()
+print("Master equation solved in {}s.".format(np.round(solve_time-ss_time,2)))
+
+#%% Plotting
+if configs['OUTPUTS'].getboolean('plotoutput'):
+    
+    fig0,ax0 = qt.hinton(rho0.states[-1])
+    fig1,ax1 = qt.hinton(rho0.states[-1].ptrace(0))
+    qt.hinton(rho0.states[-1].ptrace(1))
+    if Natom >=2:
+        qt.hinton(rho0.states[-1].ptrace(2))
+    
+    plt.figure(fig1)
+    plt.savefig(configs['OUTPUTS']['savefig'],format='png',bbox_inches='tight')
+
 total_time = np.round(time.time()-start_time,2)
 print("Total time taken = {}s.".format(total_time))
