@@ -6,7 +6,7 @@
 There is a significant performance benefit in using NeSI's optimized MKL (Math Kernel Library) when 
 solving the stated-state equation and selecting the "direct" method. Unfortunately, the QuTip version
 bundled with the NeSI "Python" module is not aware that MKL is available on NeSI's mahuika platform.
-Below are steps to coerce QuTiP to use MKL at runtime. 
+Below are steps to coerce QuTiP to using MKL at runtime. 
 
 ### Create a Python virtual environment
 
