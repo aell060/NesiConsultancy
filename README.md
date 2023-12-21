@@ -14,7 +14,7 @@ Start by loading
 ```
 module load Python
 ```
-Then
+Then create a Python virtual environment
 ```
 python -m venv /nesi/project/PROJECT_ID/qutipenv
 ```
@@ -23,6 +23,11 @@ Activate the environment
 ```
 source /nesi/project/PROJECT_ID/qutipenv/bin/activate
 ```
+and install additional packages, e.g.
+```
+pip install matplotlib
+```
+as needed.
 
 To deactivate the environment, type
 ```
