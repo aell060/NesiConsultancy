@@ -47,7 +47,8 @@ Now build the package
 pip install -e .
 ```
 This version of QuTip will check if the environment variable "EBROOTIMKL" has been set and 
-load the shared library "libmkl_rt.so" if it can find it under "$EBROOTIMKL". Variable "$EBROOTIMKL"
+load the shared library "libmkl_rt.so" if it can find it under "$EBROOTIMKL". 
+You don't need to set "$EBROOTIMKL" explicitly, as this variable
 is automatically set when typing "module load imkl". 
 
 If module "imkl" is not loaded, QuTip will revert to using the default, internal BLAS library. 
